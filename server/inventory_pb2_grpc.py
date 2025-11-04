@@ -3,7 +3,7 @@
 import grpc
 import warnings
 
-import inventory_pb2 as inventory__pb2
+from . import inventory_pb2 as inventory__pb2
 
 GRPC_GENERATED_VERSION = '1.76.0'
 GRPC_VERSION = grpc.__version__
@@ -35,12 +35,12 @@ class InventoryServiceStub(object):
             channel: A grpc.Channel.
         """
         self.CheckAvailability = channel.unary_unary(
-                '/inventory.InventoryService/CheckAvailability',
+                '/InventoryService/CheckAvailability',
                 request_serializer=inventory__pb2.InventoryRequest.SerializeToString,
                 response_deserializer=inventory__pb2.InventoryResponse.FromString,
                 _registered_method=True)
         self.ReserveItems = channel.unary_unary(
-                '/inventory.InventoryService/ReserveItems',
+                '/InventoryService/ReserveItems',
                 request_serializer=inventory__pb2.ReserveRequest.SerializeToString,
                 response_deserializer=inventory__pb2.ReserveResponse.FromString,
                 _registered_method=True)
@@ -76,9 +76,9 @@ def add_InventoryServiceServicer_to_server(servicer, server):
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
-            'inventory.InventoryService', rpc_method_handlers)
+            'InventoryService', rpc_method_handlers)
     server.add_generic_rpc_handlers((generic_handler,))
-    server.add_registered_method_handlers('inventory.InventoryService', rpc_method_handlers)
+    server.add_registered_method_handlers('InventoryService', rpc_method_handlers)
 
 
  # This class is part of an EXPERIMENTAL API.
@@ -99,7 +99,7 @@ class InventoryService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/inventory.InventoryService/CheckAvailability',
+            '/InventoryService/CheckAvailability',
             inventory__pb2.InventoryRequest.SerializeToString,
             inventory__pb2.InventoryResponse.FromString,
             options,
@@ -126,7 +126,7 @@ class InventoryService(object):
         return grpc.experimental.unary_unary(
             request,
             target,
-            '/inventory.InventoryService/ReserveItems',
+            '/InventoryService/ReserveItems',
             inventory__pb2.ReserveRequest.SerializeToString,
             inventory__pb2.ReserveResponse.FromString,
             options,
