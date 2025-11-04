@@ -1,7 +1,7 @@
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from collections.abc import Iterable as _Iterable, Mapping as _Mapping
+from collections.abc import Mapping as _Mapping
 from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
@@ -45,20 +45,25 @@ class ReserveRequest(_message.Message):
     items: _containers.ScalarMap[str, int]
     def __init__(self, items: _Optional[_Mapping[str, int]] = ...) -> None: ...
 
-class ReserveItemResult(_message.Message):
-    __slots__ = ("productId", "success", "message")
-    PRODUCTID_FIELD_NUMBER: _ClassVar[int]
-    SUCCESS_FIELD_NUMBER: _ClassVar[int]
-    MESSAGE_FIELD_NUMBER: _ClassVar[int]
-    productId: str
-    success: bool
-    message: str
-    def __init__(self, productId: _Optional[str] = ..., success: bool = ..., message: _Optional[str] = ...) -> None: ...
-
 class ReserveResponse(_message.Message):
     __slots__ = ("overallSuccess", "results")
+    class ResultsEntry(_message.Message):
+        __slots__ = ("key", "value")
+        KEY_FIELD_NUMBER: _ClassVar[int]
+        VALUE_FIELD_NUMBER: _ClassVar[int]
+        key: str
+        value: ReserveStatus
+        def __init__(self, key: _Optional[str] = ..., value: _Optional[_Union[ReserveStatus, _Mapping]] = ...) -> None: ...
     OVERALLSUCCESS_FIELD_NUMBER: _ClassVar[int]
     RESULTS_FIELD_NUMBER: _ClassVar[int]
     overallSuccess: bool
-    results: _containers.RepeatedCompositeFieldContainer[ReserveItemResult]
-    def __init__(self, overallSuccess: bool = ..., results: _Optional[_Iterable[_Union[ReserveItemResult, _Mapping]]] = ...) -> None: ...
+    results: _containers.MessageMap[str, ReserveStatus]
+    def __init__(self, overallSuccess: bool = ..., results: _Optional[_Mapping[str, ReserveStatus]] = ...) -> None: ...
+
+class ReserveStatus(_message.Message):
+    __slots__ = ("success", "message")
+    SUCCESS_FIELD_NUMBER: _ClassVar[int]
+    MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    success: bool
+    message: str
+    def __init__(self, success: bool = ..., message: _Optional[str] = ...) -> None: ...
