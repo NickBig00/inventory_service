@@ -19,8 +19,13 @@ message ReserveRequest {
   map<string, int32> items = 1;
 }
 
-message ReserveResponse {
-  bool success = 1;
-  string message = 2;
+message ReserveItemResult {
+  string productId = 1;
+  bool success = 2;
+  string message = 3;
+}
 
+message ReserveResponse {
+  bool overallSuccess = 1;
+  repeated ReserveItemResult results = 2;
 }
