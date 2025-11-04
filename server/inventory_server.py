@@ -4,12 +4,13 @@ from concurrent import futures
 
 import grpc
 
-import inventory_pb2
-import inventory_pb2_grpc
+from . import inventory_pb2
+from . import inventory_pb2_grpc
+
 
 logger = logging.getLogger()
 
-INVENTORY_DATA: dict = json.load(open("data/mock_data_inventory.json")).items()
+INVENTORY_DATA: dict = json.load(open("data/mock_data_inventory.json"))
 
 
 class InventoryServiceServicer(inventory_pb2_grpc.InventoryServiceServicer):
