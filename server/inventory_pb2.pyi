@@ -1,8 +1,8 @@
 from google.protobuf.internal import containers as _containers
 from google.protobuf import descriptor as _descriptor
 from google.protobuf import message as _message
-from collections.abc import Mapping as _Mapping
-from typing import ClassVar as _ClassVar, Optional as _Optional
+from collections.abc import Iterable as _Iterable, Mapping as _Mapping
+from typing import ClassVar as _ClassVar, Optional as _Optional, Union as _Union
 
 DESCRIPTOR: _descriptor.FileDescriptor
 
@@ -45,10 +45,20 @@ class ReserveRequest(_message.Message):
     items: _containers.ScalarMap[str, int]
     def __init__(self, items: _Optional[_Mapping[str, int]] = ...) -> None: ...
 
-class ReserveResponse(_message.Message):
-    __slots__ = ("success", "message")
+class ReserveItemResult(_message.Message):
+    __slots__ = ("productId", "success", "message")
+    PRODUCTID_FIELD_NUMBER: _ClassVar[int]
     SUCCESS_FIELD_NUMBER: _ClassVar[int]
     MESSAGE_FIELD_NUMBER: _ClassVar[int]
+    productId: str
     success: bool
     message: str
-    def __init__(self, success: bool = ..., message: _Optional[str] = ...) -> None: ...
+    def __init__(self, productId: _Optional[str] = ..., success: bool = ..., message: _Optional[str] = ...) -> None: ...
+
+class ReserveResponse(_message.Message):
+    __slots__ = ("overallSuccess", "results")
+    OVERALLSUCCESS_FIELD_NUMBER: _ClassVar[int]
+    RESULTS_FIELD_NUMBER: _ClassVar[int]
+    overallSuccess: bool
+    results: _containers.RepeatedCompositeFieldContainer[ReserveItemResult]
+    def __init__(self, overallSuccess: bool = ..., results: _Optional[_Iterable[_Union[ReserveItemResult, _Mapping]]] = ...) -> None: ...
