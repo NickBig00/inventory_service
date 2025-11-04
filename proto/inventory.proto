@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-package inventory;
-
 service InventoryService {
   rpc CheckAvailability (InventoryRequest) returns (InventoryResponse);
   rpc ReserveItems (ReserveRequest) returns (ReserveResponse);
