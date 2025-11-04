@@ -7,7 +7,6 @@ import grpc
 from . import inventory_pb2
 from . import inventory_pb2_grpc
 
-
 logger = logging.getLogger()
 
 INVENTORY_DATA: dict = json.load(open("data/mock_data_inventory.json"))
@@ -35,7 +34,7 @@ class InventoryServiceServicer(inventory_pb2_grpc.InventoryServiceServicer):
 
     def ReserveItems(self, request, context):
         reserve_items: dict = request.items
-        results: list = []
+        results: dict = {}
         overall_success: bool = True
 
         for product_id, quantity in reserve_items.items():
@@ -44,14 +43,15 @@ class InventoryServiceServicer(inventory_pb2_grpc.InventoryServiceServicer):
 
             if available_quantity >= quantity:
                 INVENTORY_DATA[product_id] = available_quantity - quantity
-                results.append(inventory_pb2.ReserveItemResult(
-                    productId=product_id, success=True, message=f"Reserved {quantity} units"
-                ))
+                results[product_id] = inventory_pb2.ReserveStatus(
+                    success=True,
+                    message=f"Reserved {quantity} units"
+                )
                 continue
 
-            results.append(inventory_pb2.ReserveItemResult(
-                productId=product_id, success=False, message=f"Not enough items in the inventory."
-            ))
+            results[product_id] = inventory_pb2.ReserveStatus(
+                success=False, message=f"Not enough items in the inventory."
+            )
             overall_success = False
 
         return inventory_pb2.ReserveResponse(overallSuccess=overall_success, results=results)
