@@ -4,6 +4,7 @@ from concurrent import futures
 
 import grpc
 
+from rabbitmq.message_sender import send_log_message
 from . import inventory_pb2
 from . import inventory_pb2_grpc
 
@@ -25,10 +26,18 @@ class InventoryServiceServicer(inventory_pb2_grpc.InventoryServiceServicer):
         logger.info(f"Checking availability for products with ids {items.keys()}")
 
         for product_id, quantity in items.items():
-            if INVENTORY_DATA.get(product_id, 0) >= quantity:
+            send_log_message("inventory", "CheckAvailability",
+                             f"Check availability for product {product_id}, Requested item count: {quantity}")
+            available_items: int = INVENTORY_DATA.get(product_id, 0)
+            if available_items >= quantity:
                 availability[product_id] = True
+                send_log_message("inventory", "CheckAvailability",
+                                 f"Enough items available ({available_items})")
+
                 continue
             availability[product_id] = False
+            send_log_message("inventory", "CheckAvailability",
+                             f"Not enough items available ({available_items})")
 
         return inventory_pb2.InventoryResponse(availability=availability)
 
@@ -47,11 +56,17 @@ class InventoryServiceServicer(inventory_pb2_grpc.InventoryServiceServicer):
                     success=True,
                     message=f"Reserved {quantity} units"
                 )
+                send_log_message("inventory", "ReserveItems",
+                                 f"Reserved {quantity} items of {product_id}")
+
                 continue
 
             results[product_id] = inventory_pb2.ReserveStatus(
                 success=False, message=f"Not enough items in the inventory."
             )
+            send_log_message("inventory", "ReserveItems",
+                             f"Couldn't reserve {quantity} items of {product_id}")
+
             overall_success = False
 
         return inventory_pb2.ReserveResponse(overallSuccess=overall_success, results=results)
