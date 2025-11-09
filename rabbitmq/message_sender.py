@@ -12,7 +12,7 @@ def send_log_message(service: str, event: str, message: str):
         connection = pika.BlockingConnection(pika.ConnectionParameters(host="rabbitmq"))
         channel = connection.channel()
 
-        channel.exchange_declare(exchange="shop_events", exchange_type="topic")
+        channel.exchange_declare(exchange="event_log", exchange_type="topic")
 
         payload = {
             "service": service,
@@ -21,7 +21,7 @@ def send_log_message(service: str, event: str, message: str):
         }
 
         channel.basic_publish(
-            exchange="shop_events",
+            exchange="event_log",
             routing_key=f"log.{service}",
             body=json.dumps(payload)
         )
